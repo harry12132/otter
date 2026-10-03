@@ -15,10 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Optional Tier 2 Inference Endpoint (e.g. HuggingFace / OmniRoute / Custom Model)
+# Tier 2 Inference Endpoint
 TIER2_INFERENCE_URL = "https://api-inference.huggingface.co/models/lynx-ai/ai-image-detector"
-# Set your API token if using Hugging Face or an auth-protected route
-HF_API_TOKEN = "your_hf_token_here" 
+HF_API_TOKEN = "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"
 
 def run_tier2_forensics(image_bytes: bytes) -> dict:
     """Fallback pixel analysis when C2PA metadata is missing."""
@@ -38,10 +37,17 @@ def run_tier2_forensics(image_bytes: bytes) -> dict:
                 "is_ai": is_ai,
                 "confidence": round(score * 100, 1)
             }
+        else:
+            print(f"Tier 2 HF API Error Status: {response.status_code} - {response.text}")
     except Exception as e:
         print(f"Tier 2 request failed: {e}")
         
     return {"success": False, "is_ai": False, "confidence": 0}
+
+
+@app.get("/")
+def home():
+    return {"status": "online", "message": "Otter pool is ready for inspection! 🦦"}
 
 
 @app.post("/inspect")
