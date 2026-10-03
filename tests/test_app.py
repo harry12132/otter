@@ -28,4 +28,8 @@ def test_inspect_endpoint_handles_empty_or_non_c2pa_upload():
     payload = response.json()
     assert payload["filename"] == "sample.jpg"
     assert payload["has_c2pa_manifest"] is False
-    assert payload["otter_verdict"] == "No C2PA manifest found (Metadata stripped or unsigned)."
+    assert payload["is_ai"] is False
+    assert payload["otter_verdict"] == (
+        "🟡 No C2PA Manifest Found\n"
+        "Metadata was stripped or the file is unsigned. Stand by for Tier 2 pixel forensics."
+    )
